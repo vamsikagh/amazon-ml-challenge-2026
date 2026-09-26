@@ -1,0 +1,26 @@
+# Large Data Files (TSV)
+*.tsv
+dataset/
+6ab10eb3b23ba_student_resource/student_resource/dataset/
+
+# Outputs and Archives
+output/
+*.zip
+*.log
+
+# Temporary Files
+v5_temp.docx
+v8_temp.docx
+create_docx_plan.py
+__MACOSX/
+.DS_Store
+
+# Python Cache & Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.pytest_cache/
