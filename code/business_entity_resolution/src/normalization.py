@@ -1,6 +1,12 @@
 import re
 import unicodedata
 
+try:
+    from unidecode import unidecode
+    _HAS_UNIDECODE = True
+except ImportError:
+    _HAS_UNIDECODE = False
+
 # Legal Suffix Canonicalization Dictionary
 LEGAL_SUFFIX_MAP = {
     r'\bpvt\.?\b': 'private',
@@ -35,9 +41,17 @@ def normalize_text(text: str) -> str:
     """
     if not isinstance(text, str) or not text.strip():
         return ""
-    
-    # 1. Unicode Normalization (NFKD)
-    text = unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').decode('utf-8')
+
+    # 1. Unicode -> Latin. Use unidecode to TRANSLITERATE non-Latin scripts
+    # (Devanagari/Tamil business names romanize to approximate Latin, e.g.
+    # 'ராஜ் இன்வெஸ்ட்மெண்ட்ஸ்' -> 'raaj innnvesttmenntts') so they can match the
+    # English reference via char n-grams. The old NFKD+ASCII-ignore path DELETED
+    # all non-Latin characters, turning ~half of the Indian names into empty
+    # strings and making them unmatchable.
+    if _HAS_UNIDECODE:
+        text = unidecode(text)
+    else:
+        text = unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').decode('utf-8')
     text = text.lower()
     
     # 2. Canonicalize Legal Suffixes

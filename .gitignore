@@ -7,6 +7,9 @@ dataset/
 output/
 *.zip
 *.log
+*.pkl
+batsignal_handoff/
+scratch/
 
 # Temporary Files
 v5_temp.docx
